@@ -41,7 +41,13 @@
               ></el-input>
             </el-col>
             <el-col :span="6">
-              <img class="captcha" src="../../assets/captcha.jpg" alt="" />
+              <!-- 验证码图片 -->
+              <img
+                class="captcha"
+                @click="changeCaptcha"
+                :src="captchaURL"
+                alt=""
+              />
             </el-col>
           </el-row>
         </el-form-item>
@@ -130,7 +136,9 @@ export default {
             trigger: "change"
           }
         ]
-      }
+      },
+      // 验证码地址
+      captchaURL: process.env.VUE_APP_BASEURL + "/captcha?type=login"
     };
   },
   methods: {
@@ -139,7 +147,7 @@ export default {
       // 是否勾选
       if (this.form.checked === false) {
         // 没勾，提示
-        this.$message.warning("老铁，没勾哦，先勾一下呗！")
+        this.$message.warning("老铁，没勾哦，先勾一下呗！");
       } else {
         this.$refs.form.validate(valid => {
           if (valid) {
@@ -153,6 +161,16 @@ export default {
           }
         });
       }
+    },
+    // 重新获取验证码
+    changeCaptcha() {
+      // this.captchaURL =
+        // process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Math.random(); // 随机数
+      // 从1970年1月1日至今的毫秒数
+      // this.captchaURL =
+      //   process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Date.now(); // 时间戳      
+      this.captchaURL =
+        process.env.VUE_APP_BASEURL + "/captcha?type=login"; // 时间戳
     }
   }
 };

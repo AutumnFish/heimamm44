@@ -16,6 +16,9 @@ import "./style/base.css";
 
 Vue.config.productionTip = false
 
+// 测试环境变量
+window.console.log(process.env.VUE_APP_BASEURL)
+
 new Vue({
   render: h => h(App),
   // 挂载到Vue示例上 router

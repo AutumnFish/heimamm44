@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "login",
   data() {
@@ -152,7 +153,21 @@ export default {
         this.$refs.form.validate(valid => {
           if (valid) {
             // 验证成功
-            this.$message.success("恭喜你，成功啦");
+            // this.$message.success("恭喜你，成功啦");
+            // 调用接口
+            axios({
+              url:process.env.VUE_APP_BASEURL+'/login',
+              method:"post",
+              // 设置跨域请求可以携带cookie
+              withCredentials:true,
+              data:{
+                phone:this.form.phone,
+                password:this.form.password,
+                code:this.form.captcha
+              }
+            }).then(res=>{
+              window.console.log(res);
+            })
           } else {
             // 验证失败
             this.$message.error("很遗憾，内容没有写对！");
@@ -167,10 +182,10 @@ export default {
       // this.captchaURL =
         // process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Math.random(); // 随机数
       // 从1970年1月1日至今的毫秒数
-      // this.captchaURL =
-      //   process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Date.now(); // 时间戳      
       this.captchaURL =
-        process.env.VUE_APP_BASEURL + "/captcha?type=login"; // 时间戳
+        process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Date.now(); // 时间戳      
+      // this.captchaURL =
+      //   process.env.VUE_APP_BASEURL + "/captcha?type=login"; // 时间戳
     }
   }
 };

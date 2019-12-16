@@ -75,7 +75,7 @@
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="手机" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="form.phone" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off"></el-input>
@@ -83,7 +83,7 @@
         <el-form-item label="图形码" :label-width="formLabelWidth">
           <el-row>
             <el-col :span="16">
-              <el-input v-model="form.name" autocomplete="off"></el-input>
+              <el-input v-model="form.code" autocomplete="off"></el-input>
             </el-col>
             <el-col :offset="1" :span="7">
               <!-- 图形验证码 -->
@@ -95,7 +95,7 @@
           <el-row>
             <el-col :span="16"><el-input v-model="form.name" autocomplete="off"></el-input></el-col>
             <el-col :span="7" :offset="1">
-              <el-button>获取用户验证码</el-button>
+              <el-button @click="getMessageCode">获取用户验证码</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -139,6 +139,8 @@ export default {
         phone: "",
         password: "",
         captcha: "",
+        // 图片验证码
+        code:"",
         // 是否勾选
         checked: false
       },
@@ -184,7 +186,7 @@ export default {
       // 上传地址
       imageUrl: "",
       // 验证码 注册区域 type和上面不同
-      regCaptchaUrl:process.env.VUE_APP_BASEURL+"/captcha?type=sendsms"
+      regCaptchaUrl: process.env.VUE_APP_BASEURL + "/captcha?type=sendsms"
     };
   },
   methods: {
@@ -246,10 +248,38 @@ export default {
         this.$message.error("上传头像图片大小不能超过 2MB!");
       }
       return isJPG && isLt2M;
-    },// 重新获取 注册验证码
-    changeRegCaptcha(){
+    }, // 重新获取 注册验证码
+    changeRegCaptcha() {
       // 时间戳 1970年1月1日 至今的毫秒数
-      this.regCaptchaUrl = `${process.env.VUE_APP_BASEURL}/captcha?type=sendsms&${Date.now()}`
+      this.regCaptchaUrl = `${process.env.VUE_APP_BASEURL}/captcha?type=sendsms&${Date.now()}`;
+    },
+    // 获取短信验证码
+    getMessageCode() {
+      // 手机号判断
+      // 正则
+      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+      // true 正确 false 错误
+      if (!reg.test(this.form.phone)) {
+        // 提示用户
+        return this.$message.error("老弟，你的手机号不太对哦，检查一下呗！");
+      }
+      // 手机号 图片验证码
+      if(this.form.code==''||this.form.code.length!=4){
+       return this.$message.error("验证码，不太对哦，你是机器人吗?滑稽")
+      }
+      // 手机号 图片验证码 都ok
+      axios({
+        url:process.env.VUE_APP_BASEURL+"/sendsms",
+        method:"post",
+        // 跨域携带cookie
+        withCredentials:true,
+        data:{
+          phone:this.form.phone,
+          code:this.form.code
+        }
+      }).then(res=>{
+        window.console.log(res)
+      })
     }
   }
 };

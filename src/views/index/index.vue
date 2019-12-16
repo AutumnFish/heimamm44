@@ -40,7 +40,10 @@
           </el-menu-item>
         </el-menu>
       </el-aside>
-      <el-main class="my-main">Main</el-main>
+      <el-main class="my-main">
+        <!-- 出口 -->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>

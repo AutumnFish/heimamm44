@@ -399,8 +399,27 @@ export default {
       this.$refs.regForm.validate(valid => {
         if (valid) {
           // 验证成功
-          this.$message.success("恭喜你，注册成功啦");
           // 调用接口
+          axios({
+            url: process.env.VUE_APP_BASEURL + "/register",
+            method: "post",
+            data: {
+              username:this.regForm.username,
+              phone:this.regForm.phone,
+              email:this.regForm.email,
+              avatar:this.regForm.avatar,
+              password:this.regForm.password,
+              rcode:this.regForm.rcode,
+            }
+          }).then(res=>{
+            // window.console.log(res)
+            if(res.data.code===200){
+              this.$message.success("注册成功");
+              this.dialogFormVisible = false;
+            }else{
+              this.$message.error("注册失败，请重新注册")
+            }
+          })
         } else {
           // 验证失败
           this.$message.error("很遗憾，内容没有写对！");

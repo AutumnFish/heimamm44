@@ -112,7 +112,9 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
+// 导入 登录接口
+import { login, sendsms, register } from "../../api/login.js";
 export default {
   name: "login",
   data() {
@@ -287,16 +289,21 @@ export default {
             // 验证成功
             // this.$message.success("恭喜你，成功啦");
             // 调用接口
-            axios({
-              url: process.env.VUE_APP_BASEURL + "/login",
-              method: "post",
-              // 设置跨域请求可以携带cookie
-              withCredentials: true,
-              data: {
-                phone: this.form.phone,
-                password: this.form.password,
-                code: this.form.captcha
-              }
+            // axios({
+            //   url: process.env.VUE_APP_BASEURL + "/login",
+            //   method: "post",
+            //   // 设置跨域请求可以携带cookie
+            //   withCredentials: true,
+            //   data: {
+            //     phone: this.form.phone,
+            //     password: this.form.password,
+            //     code: this.form.captcha
+            //   }
+            // })
+            login({
+              phone: this.form.phone,
+              password: this.form.password,
+              code: this.form.captcha
             }).then(res => {
               window.console.log(res);
             });
@@ -374,15 +381,19 @@ export default {
         }, 100);
 
         // 手机号 图片验证码 都ok
-        axios({
-          url: process.env.VUE_APP_BASEURL + "/sendsms",
-          method: "post",
-          // 跨域携带cookie
-          withCredentials: true,
-          data: {
-            phone: this.regForm.phone,
-            code: this.regForm.code
-          }
+        // axios({
+        //   url: process.env.VUE_APP_BASEURL + "/sendsms",
+        //   method: "post",
+        //   // 跨域携带cookie
+        //   withCredentials: true,
+        //   data: {
+        //     phone: this.regForm.phone,
+        //     code: this.regForm.code
+        //   }
+        // })
+        sendsms({
+          phone: this.regForm.phone,
+          code: this.regForm.code
         }).then(res => {
           // window.console.log(res);
           if (res.data.code === 200) {
@@ -393,33 +404,41 @@ export default {
         // 倒计时还没有结束
       }
     },
-    // 表单验证方法
+    // 表单验证方法 注册
     submitRegForm() {
       // 通过ref获取 注册表单 调用验证方法
       this.$refs.regForm.validate(valid => {
         if (valid) {
           // 验证成功
           // 调用接口
-          axios({
-            url: process.env.VUE_APP_BASEURL + "/register",
-            method: "post",
-            data: {
-              username:this.regForm.username,
-              phone:this.regForm.phone,
-              email:this.regForm.email,
-              avatar:this.regForm.avatar,
-              password:this.regForm.password,
-              rcode:this.regForm.rcode,
-            }
-          }).then(res=>{
+          // axios({
+          //   url: process.env.VUE_APP_BASEURL + "/register",
+          //   method: "post",
+          //   data: {
+          //     username: this.regForm.username,
+          //     phone: this.regForm.phone,
+          //     email: this.regForm.email,
+          //     avatar: this.regForm.avatar,
+          //     password: this.regForm.password,
+          //     rcode: this.regForm.rcode
+          //   }
+          // })
+          register({
+            username: this.regForm.username,
+            phone: this.regForm.phone,
+            email: this.regForm.email,
+            avatar: this.regForm.avatar,
+            password: this.regForm.password,
+            rcode: this.regForm.rcode
+          }).then(res => {
             // window.console.log(res)
-            if(res.data.code===200){
+            if (res.data.code === 200) {
               this.$message.success("注册成功");
               this.dialogFormVisible = false;
-            }else{
-              this.$message.error("注册失败，请重新注册")
+            } else {
+              this.$message.error("注册失败，请重新注册");
             }
-          })
+          });
         } else {
           // 验证失败
           this.$message.error("很遗憾，内容没有写对！");

@@ -54,7 +54,7 @@
     <img class="login-pic" src="../../assets/login_banner_ele.png" alt="" />
     <!-- 注册的对话框 -->
     <el-dialog title="用户注册" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
+      <el-form :model="regForm">
         <el-form-item label="昵称" :label-width="formLabelWidth">
           <!-- 头像上传 -->
           <el-upload
@@ -69,21 +69,21 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="昵称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="regForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="regForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="手机" :label-width="formLabelWidth">
-          <el-input v-model="form.phone" autocomplete="off"></el-input>
+          <el-input v-model="regForm.phone" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input v-model="regForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="图形码" :label-width="formLabelWidth">
           <el-row>
             <el-col :span="16">
-              <el-input v-model="form.code" autocomplete="off"></el-input>
+              <el-input v-model="regForm.code" autocomplete="off"></el-input>
             </el-col>
             <el-col :offset="1" :span="7">
               <!-- 图形验证码 -->
@@ -93,9 +93,11 @@
         </el-form-item>
         <el-form-item label="验证码" :label-width="formLabelWidth">
           <el-row>
-            <el-col :span="16"><el-input v-model="form.name" autocomplete="off"></el-input></el-col>
+            <el-col :span="16"><el-input v-model="regForm.name" autocomplete="off"></el-input></el-col>
             <el-col :span="7" :offset="1">
-              <el-button @click="getMessageCode">获取用户验证码</el-button>
+              <el-button :disabled="time != 0" @click="getMessageCode">
+                {{ time == 0 ? "获取用户验证码" : `还有(${time}s)继续获取` }}
+              </el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -139,11 +141,16 @@ export default {
         phone: "",
         password: "",
         captcha: "",
-        // 图片验证码
-        code:"",
         // 是否勾选
         checked: false
       },
+      // 注册表单
+      regForm: {
+        phone: "",
+        // 图片验证码
+        code: ""
+      },
+
       // 定义校验规则
       rules: {
         // 手机号
@@ -186,7 +193,9 @@ export default {
       // 上传地址
       imageUrl: "",
       // 验证码 注册区域 type和上面不同
-      regCaptchaUrl: process.env.VUE_APP_BASEURL + "/captcha?type=sendsms"
+      regCaptchaUrl: process.env.VUE_APP_BASEURL + "/captcha?type=sendsms",
+      // 倒计时时间
+      time: 0
     };
   },
   methods: {
@@ -255,31 +264,51 @@ export default {
     },
     // 获取短信验证码
     getMessageCode() {
-      // 手机号判断
-      // 正则
-      const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
-      // true 正确 false 错误
-      if (!reg.test(this.form.phone)) {
-        // 提示用户
-        return this.$message.error("老弟，你的手机号不太对哦，检查一下呗！");
-      }
-      // 手机号 图片验证码
-      if(this.form.code==''||this.form.code.length!=4){
-       return this.$message.error("验证码，不太对哦，你是机器人吗?滑稽")
-      }
-      // 手机号 图片验证码 都ok
-      axios({
-        url:process.env.VUE_APP_BASEURL+"/sendsms",
-        method:"post",
-        // 跨域携带cookie
-        withCredentials:true,
-        data:{
-          phone:this.form.phone,
-          code:this.form.code
+      if (this.time == 0) {
+        // 手机号判断
+        // 正则
+        const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+        // true 正确 false 错误
+        if (!reg.test(this.regForm.phone)) {
+          // 提示用户
+          return this.$message.error("老弟，你的手机号不太对哦，检查一下呗！");
         }
-      }).then(res=>{
-        window.console.log(res)
-      })
+        // 手机号 图片验证码
+        if (this.regForm.code == "" || this.regForm.code.length != 4) {
+          return this.$message.error("验证码，不太对哦，你是机器人吗?滑稽");
+        }
+        // 验证通过 才开始倒计时
+        // 可以获取
+        this.time = 60;
+        // 开启计时器
+        const interId = setInterval(() => {
+          // 递减
+          this.time--;
+          // 如果为0
+          if (this.time == 0) {
+            clearInterval(interId);
+          }
+        }, 100);
+
+        // 手机号 图片验证码 都ok
+        axios({
+          url: process.env.VUE_APP_BASEURL + "/sendsms",
+          method: "post",
+          // 跨域携带cookie
+          withCredentials: true,
+          data: {
+            phone: this.regForm.phone,
+            code: this.regForm.code
+          }
+        }).then(res => {
+          // window.console.log(res);
+          if (res.data.code === 200) {
+            this.$message.success("短信验证码是:" + res.data.data.captcha);
+          }
+        });
+      } else {
+        // 倒计时还没有结束
+      }
     }
   }
 };

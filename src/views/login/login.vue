@@ -55,11 +55,12 @@
     <!-- 注册的对话框 -->
     <el-dialog title="用户注册" :visible.sync="dialogFormVisible">
       <el-form :model="regForm">
-        <el-form-item label="昵称" :label-width="formLabelWidth">
-          <!-- 头像上传 -->
+        <el-form-item label="头像" :label-width="formLabelWidth">
+          <!-- 头像上传 name key 参数名 -->
           <el-upload
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            :action="uploadUrl"
+            name="image"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
@@ -195,7 +196,9 @@ export default {
       // 验证码 注册区域 type和上面不同
       regCaptchaUrl: process.env.VUE_APP_BASEURL + "/captcha?type=sendsms",
       // 倒计时时间
-      time: 0
+      time: 0,
+      // 图片上传地址
+      uploadUrl:process.env.VUE_APP_BASEURL+"/uploads"
     };
   },
   methods: {
@@ -244,6 +247,11 @@ export default {
     },
     // 上传的方法
     handleAvatarSuccess(res, file) {
+      // 上传成功之后的 响应内容
+      // window.console.log(res);
+      // 获取服务器返回的图片地址 不包含 基地址
+      window.console.log(res.data.file_path)
+      // 生成本地的临时地址
       this.imageUrl = URL.createObjectURL(file.raw);
     },
     beforeAvatarUpload(file) {

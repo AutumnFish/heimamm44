@@ -13,11 +13,7 @@
       <el-form :rules="rules" class="login-form" ref="form" :model="form">
         <!-- 手机号 -->
         <el-form-item prop="phone">
-          <el-input
-            placeholder="请输入手机号"
-            v-model="form.phone"
-            prefix-icon="el-icon-user"
-          ></el-input>
+          <el-input placeholder="请输入手机号" v-model="form.phone" prefix-icon="el-icon-user"></el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
@@ -34,47 +30,30 @@
           <el-row>
             <!-- 列 -->
             <el-col :span="18">
-              <el-input
-                placeholder="请输入验证码"
-                v-model="form.captcha"
-                prefix-icon="el-icon-key"
-              ></el-input>
+              <el-input placeholder="请输入验证码" v-model="form.captcha" prefix-icon="el-icon-key"></el-input>
             </el-col>
             <el-col :span="6">
               <!-- 验证码图片 -->
-              <img
-                class="captcha"
-                @click="changeCaptcha"
-                :src="captchaURL"
-                alt=""
-              />
+              <img class="captcha" @click="changeCaptcha" :src="captchaURL" alt="" />
             </el-col>
           </el-row>
         </el-form-item>
         <!-- 用户协议 -->
         <el-form-item>
           <el-checkbox v-model="form.checked">
-            我已阅读并同意 <el-link type="primary">用户协议</el-link> 和<el-link
-              type="primary"
-              >隐私条款</el-link
-            >
+            我已阅读并同意 <el-link type="primary">用户协议</el-link> 和<el-link type="primary">隐私条款</el-link>
           </el-checkbox>
         </el-form-item>
         <!-- 按钮区域 -->
         <el-form-item>
           <el-button type="primary" @click="submitForm">登录</el-button>
-          <el-button
-            @click="dialogFormVisible = true"
-            class="register-button"
-            type="success"
-            >注册</el-button
-          >
+          <el-button @click="dialogFormVisible = true" class="register-button" type="success">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
     <img class="login-pic" src="../../assets/login_banner_ele.png" alt="" />
     <!-- 注册的对话框 -->
-    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+    <el-dialog title="用户注册" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="昵称" :label-width="formLabelWidth">
           <!-- 头像上传 -->
@@ -107,19 +86,14 @@
               <el-input v-model="form.name" autocomplete="off"></el-input>
             </el-col>
             <el-col :offset="1" :span="7">
-              <img
-                class="register-captcha"
-                src="../../assets/captcha.jpg"
-                alt=""
-              />
+              <!-- 图形验证码 -->
+              <img @click="changeRegCaptcha" class="register-captcha" :src="regCaptchaUrl" alt="" />
             </el-col>
           </el-row>
         </el-form-item>
         <el-form-item label="验证码" :label-width="formLabelWidth">
           <el-row>
-            <el-col :span="16"
-              ><el-input v-model="form.name" autocomplete="off"></el-input
-            ></el-col>
+            <el-col :span="16"><el-input v-model="form.name" autocomplete="off"></el-input></el-col>
             <el-col :span="7" :offset="1">
               <el-button>获取用户验证码</el-button>
             </el-col>
@@ -128,9 +102,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -210,7 +182,9 @@ export default {
       // 宽度
       formLabelWidth: "60px",
       // 上传地址
-      imageUrl: ""
+      imageUrl: "",
+      // 验证码 注册区域 type和上面不同
+      regCaptchaUrl:process.env.VUE_APP_BASEURL+"/captcha?type=sendsms"
     };
   },
   methods: {
@@ -253,8 +227,7 @@ export default {
       // this.captchaURL =
       // process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Math.random(); // 随机数
       // 从1970年1月1日至今的毫秒数
-      this.captchaURL =
-        process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Date.now(); // 时间戳
+      this.captchaURL = process.env.VUE_APP_BASEURL + "/captcha?type=login&" + Date.now(); // 时间戳
       // this.captchaURL =
       //   process.env.VUE_APP_BASEURL + "/captcha?type=login"; // 时间戳
     },
@@ -273,6 +246,10 @@ export default {
         this.$message.error("上传头像图片大小不能超过 2MB!");
       }
       return isJPG && isLt2M;
+    },// 重新获取 注册验证码
+    changeRegCaptcha(){
+      // 时间戳 1970年1月1日 至今的毫秒数
+      this.regCaptchaUrl = `${process.env.VUE_APP_BASEURL}/captcha?type=sendsms&${Date.now()}`
     }
   }
 };
@@ -286,11 +263,7 @@ export default {
   align-items: center;
   /* 左右 均分 */
   justify-content: space-around;
-  background: linear-gradient(
-    225deg,
-    rgba(20, 147, 250, 1),
-    rgba(1, 198, 250, 1)
-  );
+  background: linear-gradient(225deg, rgba(20, 147, 250, 1), rgba(1, 198, 250, 1));
   height: 100%;
   .form-box {
     width: 478px;

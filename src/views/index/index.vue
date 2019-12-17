@@ -17,7 +17,7 @@
     <el-container>
       <el-aside width="auto" class="my-aside">
         <!-- 导航菜单 -->
-        <el-menu router default-active="/index/user" :collapse="isCollapse" class="el-menu-vertical-demo">
+        <el-menu router :default-active="$route.path" :collapse="isCollapse" class="el-menu-vertical-demo">
           <el-menu-item index="/index/chart">
             <i class="el-icon-pie-chart"></i>
             <span slot="title">数据概览</span>
@@ -56,7 +56,10 @@ export default {
       // 是否折叠
       isCollapse: false
     };
-  }
+  },
+  created() {
+    window.console.log(this.$route)
+  },
 };
 </script>
 

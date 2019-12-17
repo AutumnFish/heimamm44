@@ -9,8 +9,8 @@
         <span class="title">黑马面面</span>
       </div>
       <div class="right">
-        <img class="user-icon" src="../../assets/classflower.jpg" alt="" />
-        <span class="user-name">李达,您好</span>
+        <img class="user-icon" :src="userInfo.avatar" alt="" />
+        <span class="user-name">{{ userInfo.username }},您好</span>
         <el-button type="primary" size="small">退出</el-button>
       </div>
     </el-header>
@@ -50,24 +50,39 @@
 
 <script>
 // 导入 token工具函数
-import {getToken} from '../../utils/token.js'
+import { getToken } from "../../utils/token.js";
+// 导入 接口 方法
+import { userInfo } from "../../api/user.js";
 export default {
   name: "index",
   data() {
     return {
       // 是否折叠
-      isCollapse: false
+      isCollapse: false,
+      // 用户信息
+      userInfo: {}
     };
   },
   // 创建完成之前钩子
   beforeCreate() {
     // 不存在
-    if(!getToken()){
+    if (!getToken()) {
       // 提示用户
       this.$message.error("小样，没登录就要来首页，滑稽！");
-      this.$router.push("/login")
+      this.$router.push("/login");
     }
   },
+  created() {
+    userInfo().then(res => {
+      // window.console.log(res);
+      // 如果获取成功 保存用户信息
+      if (res.data.code === 200) {
+        // 处理用户头像的地址
+        res.data.data.avatar = `${process.env.VUE_APP_BASEURL}/${res.data.data.avatar}`
+        this.userInfo = res.data.data;
+      }
+    });
+  }
 };
 </script>
 

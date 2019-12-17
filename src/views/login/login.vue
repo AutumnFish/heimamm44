@@ -309,7 +309,8 @@ export default {
               password: this.form.password,
               code: this.form.captcha
             }).then(res => {
-              window.console.log(res);
+              // window.console.log(res);
+              // 错误提示
               if(res.data.code===202){
                 this.$message.error(res.data.message)
               }else if(res.data.code===200){

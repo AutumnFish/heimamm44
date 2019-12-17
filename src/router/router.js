@@ -75,7 +75,6 @@ const router = new VueRouter({
 const whitePaths = ["/login"];
 
 router.beforeEach((to, from, next) => {
-  window.console.log(to);
   // 除了login 页面 都需要做登录判断
   // if (to.path != "/login") {
   // true 存在，false 不存在

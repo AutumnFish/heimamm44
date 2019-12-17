@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 // 导入接收 路由
 import router from './router/router.js'
+// 导入 仓库
+import store from './store/store.js'
 
 // 导入饿了么 ui
 import ElementUI from 'element-ui';
@@ -17,10 +19,12 @@ import "./style/base.css";
 Vue.config.productionTip = false
 
 // 测试环境变量
-window.console.log(process.env.VUE_APP_BASEURL)
+// window.console.log(process.env.VUE_APP_BASEURL)
 
 new Vue({
   render: h => h(App),
   // 挂载到Vue示例上 router
-  router// router:router
+  router,// router:router
+  // 挂载到Vue实例上 store
+  store
 }).$mount('#app')

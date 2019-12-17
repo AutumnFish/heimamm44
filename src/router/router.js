@@ -19,9 +19,9 @@ import question from "../views/index/question/question.vue";
 import enterprise from "../views/index/enterprise/enterprise.vue";
 
 // 导入 token工具函数
-import {getToken} from '../utils/token.js'
+import { getToken } from "../utils/token.js";
 // 导入 element-ui的 Message
-import {Message} from 'element-ui'
+import { Message } from "element-ui";
 
 // Use一下 注册
 Vue.use(VueRouter);
@@ -69,16 +69,22 @@ const router = new VueRouter({
 // to去的 路由
 // from 来的 路由
 // next 下一个
+// 创建路由白名单数组
+const whitePaths = ["/login"];
+
 router.beforeEach((to, from, next) => {
   // 除了login 页面 都需要做登录判断
-  if (to.path != "/login") {
+  // if (to.path != "/login") {
+  // true 存在，false 不存在
+  // 转为小写
+  if (whitePaths.includes(to.path.toLocaleLowerCase()) === false) {
     // 必须要登录才可以访问
     if (!getToken()) {
       // 提示用户
       // window.alert("先登录");
-      Message.error('兄弟，请先登录，在访问！！！！')
+      Message.error("兄弟，请先登录，在访问！！！！");
       // 去登录页
-      next('/login')
+      next("/login");
     }
   } else {
     // 登录页 直接放过去

@@ -11,7 +11,7 @@
       <div class="right">
         <img class="user-icon" :src="$store.state.userInfo.avatar" alt="" />
         <span class="user-name">{{ $store.state.userInfo.username }},您好</span>
-        <el-button type="primary" size="small">退出</el-button>
+        <el-button @click="logout" type="primary" size="small">退出</el-button>
       </div>
     </el-header>
     <el-container>
@@ -50,9 +50,12 @@
 
 <script>
 // 导入 token工具函数
-// import {  removeToken } from "../../utils/token.js";
+import {  removeToken } from "../../utils/token.js";
 // 导入 接口 方法
 // import { userInfo } from "../../api/user.js";
+
+// 导入接口方法
+import { userLogout } from "../../api/user.js";
 export default {
   name: "index",
   data() {
@@ -62,6 +65,37 @@ export default {
       // 用户信息
       userInfo: {}
     };
+  },
+  // 方法
+  methods: {
+    logout() {
+      // 问问用户
+      this.$confirm("你真的要离开我这个网站吗?", "友情提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          // 确定
+          userLogout().then(res=>{
+            // window.console.log(res)
+            if(res.data.code===200){
+              // token
+              removeToken()
+              // 用户信息
+              this.$store.state.userInfo = {}
+              // 去登录页
+              this.$router.push("/login")
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "你是个好人！"
+          });
+        });
+    }
   },
   // 创建完成之前钩子 迁移到导航守卫中
   // beforeCreate() {

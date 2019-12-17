@@ -28,3 +28,13 @@ export function userInfo(){
         }
     })
 }
+// 用户退出
+export function userLogout(){
+    return instance({
+        url:"/logout",
+        method:'get',
+        headers:{
+            token:getToken()
+        }
+    })
+}

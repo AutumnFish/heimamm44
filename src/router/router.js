@@ -20,6 +20,8 @@ import enterprise from "../views/index/enterprise/enterprise.vue";
 
 // 导入 token工具函数
 import {getToken} from '../utils/token.js'
+// 导入 element-ui的 Message
+import {Message} from 'element-ui'
 
 // Use一下 注册
 Vue.use(VueRouter);
@@ -73,7 +75,8 @@ router.beforeEach((to, from, next) => {
     // 必须要登录才可以访问
     if (!getToken()) {
       // 提示用户
-      window.alert("先登录");
+      // window.alert("先登录");
+      Message.error('兄弟，请先登录，在访问！！！！')
       // 去登录页
       next('/login')
     }

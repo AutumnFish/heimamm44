@@ -50,7 +50,7 @@
 
 <script>
 // 导入 token工具函数
-import { getToken, removeToken } from "../../utils/token.js";
+import {  removeToken } from "../../utils/token.js";
 // 导入 接口 方法
 import { userInfo } from "../../api/user.js";
 export default {
@@ -63,15 +63,15 @@ export default {
       userInfo: {}
     };
   },
-  // 创建完成之前钩子
-  beforeCreate() {
-    // 不存在
-    if (!getToken()) {
-      // 提示用户
-      this.$message.error("小样，没登录就要来首页，滑稽！");
-      this.$router.push("/login");
-    }
-  },
+  // 创建完成之前钩子 迁移到导航守卫中
+  // beforeCreate() {
+  //   // 不存在
+  //   if (!getToken()) {
+  //     // 提示用户
+  //     this.$message.error("小样，没登录就要来首页，滑稽！");
+  //     this.$router.push("/login");
+  //   }
+  // },
   created() {
     userInfo().then(res => {
       window.console.log(res);

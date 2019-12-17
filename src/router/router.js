@@ -17,6 +17,10 @@ import chart from "../views/index/chart/chart.vue";
 import question from "../views/index/question/question.vue";
 // 企业组件
 import enterprise from "../views/index/enterprise/enterprise.vue";
+
+// 导入 token工具函数
+import {getToken} from '../utils/token.js'
+
 // Use一下 注册
 Vue.use(VueRouter);
 // 规则
@@ -58,5 +62,26 @@ const router = new VueRouter({
   routes // routes:routes
   // routes:[]
 });
+
+// 注册导航守卫
+// to去的 路由
+// from 来的 路由
+// next 下一个
+router.beforeEach((to, from, next) => {
+  // 除了login 页面 都需要做登录判断
+  if (to.path != "/login") {
+    // 必须要登录才可以访问
+    if (!getToken()) {
+      // 提示用户
+      window.alert("先登录");
+      // 去登录页
+      next('/login')
+    }
+  } else {
+    // 登录页 直接放过去
+    next();
+  }
+});
+
 // 暴露出去
 export default router;

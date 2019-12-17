@@ -24,6 +24,8 @@ import { getToken, removeToken } from "../utils/token.js";
 import { Message } from "element-ui";
 // 导入 用户信息接口
 import { userInfo } from "../api/user.js";
+// 导入仓库
+import store from "../store/store.js";
 
 // Use一下 注册
 Vue.use(VueRouter);
@@ -95,6 +97,10 @@ router.beforeEach((to, from, next) => {
         // 如果获取成功 保存用户信息
         if (res.data.code === 200) {
           // token 是对的 放走
+          // window.console.log(store)
+          store.state.userInfo = res.data.data;
+          // 用户头像 增加基地址
+          store.state.userInfo.avatar = process.env.VUE_APP_BASEURL + "/" + store.state.userInfo.avatar;
           next();
         } else if (res.data.code === 206) {
           // 提示用户

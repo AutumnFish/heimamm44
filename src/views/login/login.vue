@@ -115,6 +115,10 @@
 // import axios from "axios";
 // 导入 登录接口
 import { login, sendsms, register } from "../../api/login.js";
+
+// 导入并使用 token函数
+import {setToken} from '../../utils/token.js'
+
 export default {
   name: "login",
   data() {
@@ -310,7 +314,9 @@ export default {
                 this.$message.error(res.data.message)
               }else if(res.data.code===200){
                 this.$message.success("你可算回来啦！")
-                localStorage.setItem("token",res.data.data.token)
+                // 这种不建议用 key可能会写错
+                // localStorage.setItem("token",res.data.data.token)
+                setToken(res.data.data.token)
                 this.$router.push("/index")
               }
             });

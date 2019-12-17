@@ -49,6 +49,8 @@
 </template>
 
 <script>
+// 导入 token工具函数
+import {getToken} from '../../utils/token.js'
 export default {
   name: "index",
   data() {
@@ -57,8 +59,14 @@ export default {
       isCollapse: false
     };
   },
-  created() {
-    window.console.log(this.$route)
+  // 创建完成之前钩子
+  beforeCreate() {
+    // 不存在
+    if(!getToken()){
+      // 提示用户
+      this.$message.error("小样，没登录就要来首页，滑稽！");
+      this.$router.push("/login")
+    }
   },
 };
 </script>

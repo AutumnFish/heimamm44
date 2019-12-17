@@ -19,9 +19,11 @@ import question from "../views/index/question/question.vue";
 import enterprise from "../views/index/enterprise/enterprise.vue";
 
 // 导入 token工具函数
-import { getToken } from "../utils/token.js";
+import { getToken, removeToken } from "../utils/token.js";
 // 导入 element-ui的 Message
 import { Message } from "element-ui";
+// 导入 用户信息接口
+import { userInfo } from "../api/user.js";
 
 // Use一下 注册
 Vue.use(VueRouter);
@@ -73,6 +75,7 @@ const router = new VueRouter({
 const whitePaths = ["/login"];
 
 router.beforeEach((to, from, next) => {
+  window.console.log(to);
   // 除了login 页面 都需要做登录判断
   // if (to.path != "/login") {
   // true 存在，false 不存在
@@ -85,6 +88,24 @@ router.beforeEach((to, from, next) => {
       Message.error("兄弟，请先登录，在访问！！！！");
       // 去登录页
       next("/login");
+    } else {
+      // 如果有token 继续走
+      // next()
+      userInfo().then(res => {
+        window.console.log(res);
+        // 如果获取成功 保存用户信息
+        if (res.data.code === 200) {
+          // token 是对的 放走
+          next();
+        } else if (res.data.code === 206) {
+          // 提示用户
+          Message.warning("小样，就知道会伪造token，滚犊子");
+          // 干掉token
+          removeToken();
+          // 打回登录页
+          next("/login");
+        }
+      });
     }
   } else {
     // 登录页 直接放过去

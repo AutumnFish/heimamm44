@@ -91,12 +91,23 @@ export default {
       // 新增对话框的数据
       // 是否显示
       addFormVisible: false,
+      // 页数据
+      // 页码
+      page:1,
+      // 每一页多少条
+      limit:6
 
     };
   },
   created() {
-    subjectList().then(res=>{
-      window.console.log(res)
+    // 传递一个参数
+    subjectList({
+      page:this.page,
+      limit:this.limit
+    }).then(res=>{
+      // window.console.log(res)
+      // 保存表格数据
+      this.tableData = res.data.items
     })
   },
 };

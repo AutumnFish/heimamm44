@@ -8,6 +8,12 @@ const store = new Vuex.Store({
 	state:{
 		// 用户信息
 		userInfo:{}
+	},
+	// 修改数据的方法
+	mutations:{
+		changeUserInfo(state,newUserInfo){
+			state.userInfo = newUserInfo
+		}
 	}
 })
 // 暴露出去

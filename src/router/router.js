@@ -98,9 +98,14 @@ router.beforeEach((to, from, next) => {
         if (res.data.code === 200) {
           // token 是对的 放走
           // window.console.log(store)
-          store.state.userInfo = res.data.data;
+          // store.state.userInfo = res.data.data;
           // 用户头像 增加基地址
-          store.state.userInfo.avatar = process.env.VUE_APP_BASEURL + "/" + store.state.userInfo.avatar;
+          // store.state.userInfo.avatar = process.env.VUE_APP_BASEURL + "/" + store.state.userInfo.avatar;
+
+          // 修改头像地址 基地址拼接上 图片地址
+          res.data.data.avatar = process.env.VUE_APP_BASEURL + "/" +  res.data.data.avatar;
+          // commit 提交到仓库中
+          store.commit("changeUserInfo", res.data.data)
           next();
         } else if (res.data.code === 206) {
           // 提示用户

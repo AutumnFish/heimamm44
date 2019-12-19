@@ -53,11 +53,11 @@
         background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :current-page="page"
+        :page-sizes="pageSizes"
+        :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="total"
       >
       </el-pagination>
     </el-card>
@@ -120,13 +120,33 @@ export default {
       // 页码
       page: 1,
       // 每一页多少条
-      limit: 6
+      limit: 2,
+      // 页容量选项 数组
+      pageSizes:[2,4,6,9],
+      // 总条数
+      total:0
     };
   },
   created() {
     this.getData();
   },
   methods: {
+    // 页码改变
+    handleCurrentChange(page){
+      window.console.log(page);
+      // 保存页码
+      this.page = page
+      // 重新获取数据
+      this.getData()
+    },
+    // 页容量改变 回调函数
+    handleSizeChange(size){
+      window.console.log(size);
+      // 保存 页容量
+      this.limit = size;
+      // 重新获取数据
+      this.getData()
+    },
     // 清空搜索
     clear(){
       for (const key in this.formInline) {
@@ -147,6 +167,8 @@ export default {
       }).then(res => {
         // 保存表格数据
         this.tableData = res.data.items;
+        // 保存总条数
+        this.total = res.data.pagination.total;
       });
     }
   }

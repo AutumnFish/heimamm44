@@ -1,7 +1,7 @@
 <template>
   <div class="subject-container">
     <!-- 头部卡片 -->
-    <el-card>
+    <el-card class="head-card">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="学科编号">
           <el-input class="short-input" v-model="formInline.user" placeholder="审批人"></el-input>
@@ -21,7 +21,7 @@
         <el-form-item class="btn-form-item">
           <el-button type="primary">搜索</el-button>
           <el-button>清除</el-button>
-          <el-button type="primary" icon="el-icon-plus">新增学科</el-button>
+          <el-button @click="addFormVisible = true" type="primary" icon="el-icon-plus">新增学科</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -45,12 +45,20 @@
       >
       </el-pagination>
     </el-card>
+    <!-- 新增框 -->
+    <addDialog></addDialog>
   </div>
 </template>
 
 <script>
+// 导入组件
+import addDialog from './components/addDialog.vue'
 export default {
   name: "subject",
+  // 注册组件
+  components:{
+    addDialog
+  },
   data() {
     return {
       // 顶部的 行内表单
@@ -77,7 +85,11 @@ export default {
           name: "王小虎",
           address: "上海市普陀区金沙江路 1516 弄"
         }
-      ]
+      ],
+      // 新增对话框的数据
+      // 是否显示
+      addFormVisible: false,
+
     };
   }
 };
@@ -85,23 +97,27 @@ export default {
 
 <style lang="less">
 .subject-container {
-  // 设置按钮的容器尺寸
-  .el-form-item__content {
-    width: 149px;
+  .head-card {
+    // 设置按钮的容器尺寸
+    .el-form-item__content {
+      width: 149px;
+    }
+    .short-input .el-form-item__content {
+      width: 100px;
+    }
+    .btn-form-item .el-form-item__content {
+      width: 100%;
+    }
   }
-  .short-input .el-form-item__content {
-    width: 100px;
-  }
-  .btn-form-item .el-form-item__content {
-    width: 100%;
-  }
+
   // 分页
-  .el-pagination{
+  .el-pagination {
     text-align: center;
     margin-top: 30px;
   }
-  .body-card{
+  .body-card {
     margin-top: 19px;
   }
+
 }
 </style>

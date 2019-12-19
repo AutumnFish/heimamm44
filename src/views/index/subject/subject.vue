@@ -52,13 +52,13 @@
 
 <script>
 // 导入组件
-import addDialog from './components/addDialog.vue'
+import addDialog from "./components/addDialog.vue";
 // 导入接口
-import {subjectList} from '../../../api/subject.js'
+import { subjectList } from "../../../api/subject.js";
 export default {
   name: "subject",
   // 注册组件
-  components:{
+  components: {
     addDialog
   },
   data() {
@@ -93,23 +93,26 @@ export default {
       addFormVisible: false,
       // 页数据
       // 页码
-      page:1,
+      page: 1,
       // 每一页多少条
-      limit:6
-
+      limit: 6
     };
   },
   created() {
-    // 传递一个参数
-    subjectList({
-      page:this.page,
-      limit:this.limit
-    }).then(res=>{
-      // window.console.log(res)
-      // 保存表格数据
-      this.tableData = res.data.items
-    })
+    this.getData();
   },
+  methods: {
+    getData() {
+      // 传递一个参数
+      subjectList({
+        page: this.page,
+        limit: this.limit
+      }).then(res => {
+        // 保存表格数据
+        this.tableData = res.data.items;
+      });
+    }
+  }
 };
 </script>
 
@@ -136,6 +139,5 @@ export default {
   .body-card {
     margin-top: 19px;
   }
-
 }
 </style>

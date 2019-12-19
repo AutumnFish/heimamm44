@@ -11,7 +11,7 @@ import { getToken } from "./token.js";
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASEURL,
   // 跨域携带cookie
-  withCredentials: true
+  withCredentials: true,
 });
 
 // 为instance 添加拦截器

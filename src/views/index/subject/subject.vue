@@ -53,6 +53,8 @@
 <script>
 // 导入组件
 import addDialog from './components/addDialog.vue'
+// 导入接口
+import {subjectList} from '../../../api/subject.js'
 export default {
   name: "subject",
   // 注册组件
@@ -91,7 +93,12 @@ export default {
       addFormVisible: false,
 
     };
-  }
+  },
+  created() {
+    subjectList().then(res=>{
+      window.console.log(res)
+    })
+  },
 };
 </script>
 

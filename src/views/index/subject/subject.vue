@@ -4,23 +4,23 @@
     <el-card class="head-card">
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="学科编号">
-          <el-input class="short-input" v-model="formInline.user" placeholder="审批人"></el-input>
+          <el-input class="short-input" v-model="formInline.rid" ></el-input>
         </el-form-item>
         <el-form-item label="学科名称">
-          <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+          <el-input v-model="formInline.name" ></el-input>
         </el-form-item>
         <el-form-item label="创建者">
-          <el-input class="short-input" v-model="formInline.user" placeholder="审批人"></el-input>
+          <el-input class="short-input" v-model="formInline.username" ></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="formInline.region" placeholder="请选择状态">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select v-model="formInline.status" placeholder="请选择状态">
+            <el-option label="禁用" value="0"></el-option>
+            <el-option label="启用" value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item class="btn-form-item">
-          <el-button type="primary">搜索</el-button>
-          <el-button>清除</el-button>
+          <el-button type="primary" @click="getData">搜索</el-button>
+          <el-button @click="clear">清除</el-button>
           <el-button @click="addFormVisible = true" type="primary" icon="el-icon-plus">新增学科</el-button>
         </el-form-item>
       </el-form>
@@ -80,7 +80,16 @@ export default {
   data() {
     return {
       // 顶部的 行内表单
-      formInline: {},
+      formInline: {
+        // 学科id
+        rid:"",
+        // 状态
+        status:"",
+        // 学科名称
+        name:"",
+        // 创建者
+        username:""
+      },
       // table的数据
       tableData: [
         {
@@ -118,11 +127,23 @@ export default {
     this.getData();
   },
   methods: {
+    // 清空搜索
+    clear(){
+      for (const key in this.formInline) {
+        // 获取每一个属性
+        this.formInline[key] = ''
+      } 
+      // 重新获取数据
+      this.getData()
+    },
+    // 数据获取
     getData() {
       // 传递一个参数
       subjectList({
         page: this.page,
-        limit: this.limit
+        limit: this.limit,
+        // 展开运算符（扩展运算符）
+        ...this.formInline
       }).then(res => {
         // 保存表格数据
         this.tableData = res.data.items;

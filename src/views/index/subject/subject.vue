@@ -43,7 +43,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text">编辑</el-button>
-            <el-button type="text">{{ scope.row.status === 1 ? "禁用" : "启用" }}</el-button>
+            <el-button type="text" @click="changeStatus(scope.row)">{{ scope.row.status === 1 ? "禁用" : "启用" }}</el-button>
             <el-button type="text" @click="removeItem(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -70,7 +70,7 @@
 // 导入组件
 import addDialog from "./components/addDialog.vue";
 // 导入接口
-import { subjectList, subjectRemove } from "../../../api/subject.js";
+import { subjectList, subjectRemove,subjectStatus } from "../../../api/subject.js";
 export default {
   name: "subject",
   // 注册组件
@@ -131,6 +131,18 @@ export default {
     this.getData();
   },
   methods: {
+    // 切换状态
+    changeStatus(item){
+      // 调用接口
+      subjectStatus({
+        id:item.id
+      }).then(res=>{
+        if(res.code===200){
+          this.$message.success('状态修改成功了哦');
+          this.getData()
+        }
+      })
+    },
     // 删除数据
     removeItem(item) {
       window.console.log(item);

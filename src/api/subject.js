@@ -17,7 +17,6 @@ export function subjectList(params) {
     url: "/subject/list",
     method: "get",
     params,
-    
   });
 }
 // 学科 状态
